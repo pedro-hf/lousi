@@ -1,0 +1,21 @@
+{% load static %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'vocabulary/style.css' %}">
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Vocabulary</title>
+</head>
+<body>
+<div class="boxed">
+    <p>
+    <a href="{% url 'vocabulary:upload' %}">Upload</a>
+    </p>
+</div>
+    <p>
+    <a href="{% url 'vocabulary:test' %}">test</a>
+    </p>
+</body>
+</html>
