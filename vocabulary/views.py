@@ -5,10 +5,12 @@ import io
 import os
 from django.shortcuts import render
 from django.contrib import messages
-from .models import Word
+from .models import Word, Question
 from django.conf import settings
 import numpy as np
 from .forms import AnswerForm
+from django.utils import timezone
+
 
 def index(request):
     return render(request, 'vocabulary/vocabulary_index.html')
@@ -56,16 +58,42 @@ def test(request):
     if request.method == 'GET':
         n = 4
         words = []
+        styles = []
         for n in np.random.randint(1, 800, n):
             words.append(Word.objects.get(pk=n))
-        context = {'question': choice(words), 'answers': words}
+            styles.append('btn-primary')
+
+        question_word = choice(words)
+        question, created = Question.objects.update_or_create(
+            question=question_word,
+            answer=None,
+            opt1=words[0],
+            opt2=words[1],
+            opt3=words[2],
+            opt4=words[3],
+            date=timezone.now(),
+            user='guest'
+        )
+        context = {'question': question_word, 'answers': list(zip(words, styles)), 'question_record': question}
         return render(request, 'vocabulary/test.html', context)
+
     elif request.method == 'POST':
         form = AnswerForm(request.POST)
-        n = 4
-        words = []
-        for n in np.random.randint(1, 800, n):
-            words.append(Word.objects.get(pk=n))
-        context = {'question': choice(words), 'answers': words, 'form': form}
+        print(form)
+        question = Question.objects.get(pk=request.POST['question_id'])
+        question.answer = Word.objects.get(pk=request.POST['answer_id'])
+        question.save()
+
+        styles = []
+        words = [question.opt1, question.opt2, question.opt3, question.opt4]
+        for word in words:
+            if word.id == question.question.id:
+                styles.append('btn-success')
+            elif word.id == question.answer.id:
+                styles.append('btn-danger')
+            else:
+                styles.append('btn-secondary')
+
+        context = {'question': question.question, 'answers': list(zip(words, styles))}
         return render(request, 'vocabulary/result.html', context)
 

@@ -53,18 +53,15 @@
 
       <section class="jumbotron text-center">
         <div class="container">
-          <h2 class="jumbotron-heading">Last form: {{ form }} </h2>
-          <h1 class="jumbotron-heading">{{question.english}}</h1>
+          <h1 class="jumbotron-heading">{{question.english}}: {{question.hanzi}} [{{question.jyutping}}]</h1>
           <p class="lead text-muted">Something short and leading about the collection below—its contents, the creator, etc. Make it short and sweet, but not too short so folks don't simply skip over it entirely.</p>
 
           <div class="container">
 
             <div class="row justify-content-center">
-              {% for answer in answers %}
+              {% for answer, style in answers %}
                   <div class="col-3">
-                    <form action="{% url 'vocabulary:test' %}" method="post">
-                      <input class="btn btn-primary btn-lg" type="submit" name="answer" value="{{ answer.hanzi }}">
-                    </form>
+                      <button class="btn btn-primary btn-lg {{ style }}">{{ answer.hanzi }}</button>
                   </div>
               {% endfor %}
             </div>
