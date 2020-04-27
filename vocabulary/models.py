@@ -22,4 +22,4 @@ class Question(models.Model):
     date = models.DateTimeField()
 
     def __str__(self):
-        return self.question
+        return self.question.english
