@@ -74,7 +74,8 @@ def test(request):
             date=timezone.now(),
             user='guest'
         )
-        context = {'question': question_word, 'answers': list(zip(words, styles)), 'question_record': question}
+        context = {'question': question_word, 'answers': list(zip(words, styles)), 'question_record': question,
+                   'question_field': "hanzi", 'answer_field': "english"}
         return render(request, 'vocabulary/test.html', context)
 
     elif request.method == 'POST':
