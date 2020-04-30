@@ -2,14 +2,13 @@
 {% block content %}
       <section class="jumbotron text-center">
         <div class="container">
-          <label>{{ get }}</label>
           <h1 class="jumbotron-heading">
           {% if question_field == "english" %}
             {{question.english}}
           {% elif question_field == "hanzi" %}
             {{question.hanzi}}
           {% elif question_field == "jyutping" %}
-            {{question.juytping}}
+            {{question.jyutping}}
           {% endif %}
           </h1>
           <div class="container">
