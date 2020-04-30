@@ -16,7 +16,13 @@
             <div class="row justify-content-center">
               {% for answer, style in answers %}
                   <div class="col-3">
-                      <button class="btn btn-primary btn-lg {{ style }}">{{ answer.hanzi }}</button>
+                      {% if answer_field == "english" %}
+                        <button class="btn btn-primary btn-lg {{ style }}">{{ answer.english }}</button>
+                      {% elif answer_field == "hanzi" %}
+                        <button class="btn btn-primary btn-lg {{ style }}">{{ answer.hanzi }}</button>
+                      {% elif answer_field == "jyutping" %}
+                        <button class="btn btn-primary btn-lg {{ style }}">{{ answer.jyutping }}</button>
+                      {% endif %}
                   </div>
               {% endfor %}
             </div>
@@ -29,7 +35,7 @@
         <div class="container">
             <div class="row justify-content-center">
               <p>
-              <a href="{% url 'vocabulary:test' %}" class="btn btn-primary my-2">Next</a>
+              <a href="{% url 'vocabulary:test' question_field answer_field %}" class="btn btn-primary my-2">Next</a>
 
               </p>
               </div>

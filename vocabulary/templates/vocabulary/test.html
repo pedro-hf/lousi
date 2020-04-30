@@ -2,6 +2,7 @@
 {% block content %}
       <section class="jumbotron text-center">
         <div class="container">
+          <label>{{ get }}</label>
           <h1 class="jumbotron-heading">
           {% if question_field == "english" %}
             {{question.english}}
@@ -16,7 +17,7 @@
             <div class="row justify-content-center">
               {% for answer, style in answers %}
                   <div class="col-3">
-                    <form action="{% url 'vocabulary:result' %}" method="POST">
+                    <form action="{% url 'vocabulary:result' question_field answer_field %}" method="POST">
                       {% csrf_token %}
                       <input id="question_id" name="question_id" type="hidden" value="{{ question_record.id }}">
                       <input id="answer_id" name="answer_id" type="hidden" value="{{ answer.id }}">

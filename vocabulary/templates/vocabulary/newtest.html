@@ -1,0 +1,29 @@
+{% extends 'vocabulary/base.html' %}
+{% block content %}
+<section class="jumbotron text-center">
+    <div class="row justify-content-center">
+        <form action="{% url 'vocabulary:createtest' %}" method="get">
+            <label for="sel1">Select question field:</label>
+            <select class="form-control" id="sel1" name="question_field">
+            <option value="hanzi">hanzi</option>
+            <option value="english">english</option>
+            <option value="jyutping">jyutping</option>
+            </select>
+
+            <label for="sel2">Select answer field:</label>
+            <select class="form-control" id="sel2" name="answer_field">
+            <option value="hanzi">hanzi</option>
+            <option value="english">english</option>
+            <option value="jyutping">jyutping</option>
+            </select>
+
+            <label>Select number of questions :</label><br>
+            <label class="radio-inline"><input type="radio" name="optradio" checked>5</label>
+            <label class="radio-inline"><input type="radio" name="optradio">10</label>
+            <label class="radio-inline"><input type="radio" name="optradio">20</label>
+            <br>
+            <input class="btn btn-primary" type="submit" name="start_test">
+        </form>
+    </div>
+</section>
+{% endblock %}

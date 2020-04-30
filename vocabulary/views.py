@@ -3,7 +3,7 @@ from random import choice
 import csv
 import io
 import os
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib import messages
 from .models import Word, Question
 from django.conf import settings
@@ -54,7 +54,7 @@ def vocabulary_upload(request):
     return render(request, template, context)
 
 
-def test(request):
+def test(request, question_field, answer_field):
     if request.method == 'GET':
         n = 4
         words = []
@@ -75,7 +75,7 @@ def test(request):
             user='guest'
         )
         context = {'question': question_word, 'answers': list(zip(words, styles)), 'question_record': question,
-                   'question_field': "hanzi", 'answer_field': "english"}
+                   'question_field': question_field, 'answer_field': answer_field}
         return render(request, 'vocabulary/test.html', context)
 
     elif request.method == 'POST':
@@ -95,6 +95,16 @@ def test(request):
             else:
                 styles.append('btn-secondary')
 
-        context = {'question': question.question, 'answers': list(zip(words, styles))}
+        context = {'question': question.question, 'answers': list(zip(words, styles)),
+                   'question_field': question_field, 'answer_field': answer_field}
         return render(request, 'vocabulary/result.html', context)
 
+
+def newtest(request):
+    return render(request, 'vocabulary/newtest.html')
+
+
+def createtest(request):
+    answer = request.GET['answer_field']
+    question = request.GET['question_field']
+    return redirect('test/{}/{}'.format(question, answer))
