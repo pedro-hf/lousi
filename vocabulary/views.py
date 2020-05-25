@@ -57,7 +57,7 @@ def vocabulary_upload(request):
 def test(request, question_field, answer_field, total_no_questions, current_question):
     if request.method == 'GET':
         if current_question > total_no_questions:
-            return redirect(request.build_absolute_uri('/vocabulary/'))
+            return redirect(request.build_absolute_uri('/vocabulary/final_result/{}'.format(total_no_questions)))
         else:
             n = 4
             words = []
@@ -103,6 +103,21 @@ def test(request, question_field, answer_field, total_no_questions, current_ques
                    'answer_field': answer_field, 'next_question': current_question + 1,
                    'total_no_questions': total_no_questions}
         return render(request, 'vocabulary/result.html', context)
+
+
+def final_result(request, total_no_questions):
+    n = total_no_questions
+    latest_questions = Question.objects.order_by('-id')[:n]
+    correct = 0
+    for question in latest_questions:
+        if question.answer == question.question:
+            correct += 1
+    if correct / n >= 0.8:
+        comment = '好勁'
+    else:
+        comment = 'oops...唔好'
+    context = {'total_no_questions': n, 'correct': correct, 'comment': comment}
+    return render(request, 'vocabulary/final_result.html', context)
 
 
 def newtest(request):
