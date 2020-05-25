@@ -16,7 +16,7 @@
             <div class="row justify-content-center">
               {% for answer, style in answers %}
                   <div class="col-3">
-                    <form action="{% url 'vocabulary:result' question_field answer_field %}" method="POST">
+                    <form action="{% url 'vocabulary:result' question_field answer_field total_no_questions current_question %}" method="POST">
                       {% csrf_token %}
                       <input id="question_id" name="question_id" type="hidden" value="{{ question_record.id }}">
                       <input id="answer_id" name="answer_id" type="hidden" value="{{ answer.id }}">
@@ -27,7 +27,6 @@
                       {% elif answer_field == "jyutping" %}
                         <input class="btn btn-primary btn-lg {{ style }}" type="submit" name="answer" value="{{ answer.jyutping }}">
                       {% endif %}
-
                     </form>
                   </div>
               {% endfor %}

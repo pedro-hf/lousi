@@ -54,29 +54,33 @@ def vocabulary_upload(request):
     return render(request, template, context)
 
 
-def test(request, question_field, answer_field):
+def test(request, question_field, answer_field, total_no_questions, current_question):
     if request.method == 'GET':
-        n = 4
-        words = []
-        styles = []
-        for n in np.random.randint(1, 800, n):
-            words.append(Word.objects.get(pk=n))
-            styles.append('btn-primary')
+        if current_question > total_no_questions:
+            return redirect(request.build_absolute_uri('/vocabulary/'))
+        else:
+            n = 4
+            words = []
+            styles = []
+            for n in np.random.randint(1, 800, n):
+                words.append(Word.objects.get(pk=n))
+                styles.append('btn-primary')
 
-        question_word = choice(words)
-        question, created = Question.objects.update_or_create(
-            question=question_word,
-            answer=None,
-            opt1=words[0],
-            opt2=words[1],
-            opt3=words[2],
-            opt4=words[3],
-            date=timezone.now(),
-            user='guest'
-        )
-        context = {'question': question_word, 'answers': list(zip(words, styles)), 'question_record': question,
-                   'question_field': question_field, 'answer_field': answer_field}
-        return render(request, 'vocabulary/test.html', context)
+            question_word = choice(words)
+            question, created = Question.objects.update_or_create(
+                question=question_word,
+                answer=None,
+                opt1=words[0],
+                opt2=words[1],
+                opt3=words[2],
+                opt4=words[3],
+                date=timezone.now(),
+                user='guest'
+            )
+            context = {'question': question_word, 'answers': list(zip(words, styles)), 'question_record': question,
+                       'question_field': question_field, 'answer_field': answer_field, 'current_question': current_question,
+                       'total_no_questions': total_no_questions}
+            return render(request, 'vocabulary/test.html', context)
 
     elif request.method == 'POST':
         form = AnswerForm(request.POST)
@@ -95,8 +99,9 @@ def test(request, question_field, answer_field):
             else:
                 styles.append('btn-secondary')
 
-        context = {'question': question.question, 'answers': list(zip(words, styles)),
-                   'question_field': question_field, 'answer_field': answer_field}
+        context = {'question': question.question, 'answers': list(zip(words, styles)), 'question_field': question_field,
+                   'answer_field': answer_field, 'next_question': current_question + 1,
+                   'total_no_questions': total_no_questions}
         return render(request, 'vocabulary/result.html', context)
 
 
@@ -107,4 +112,5 @@ def newtest(request):
 def createtest(request):
     answer = request.GET['answer_field']
     question = request.GET['question_field']
-    return redirect('test/{}/{}'.format(question, answer))
+    total_no_questions = request.GET['no_q']
+    return redirect('test/{}/{}/{}/{}'.format(question, answer, total_no_questions, 0))
