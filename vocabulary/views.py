@@ -1,4 +1,5 @@
-from django.http import HttpResponse
+from django.db.models import Count, Case, When, IntegerField, F, Avg, FloatField, Value
+from django.db.models.functions import Cast
 from random import choice
 import csv
 import io
@@ -54,18 +55,27 @@ def vocabulary_upload(request):
     return render(request, template, context)
 
 
+def _get_questions(mode='random'):
+    n = 4
+    words = []
+    if mode == 'random':
+        for n in np.random.randint(1, 800, n):
+            words.append(Word.objects.get(pk=n))
+        return words
+    elif mode == 'revision':
+        words = Word.objects.annotate(score=Avg(Case(When(question_word=F('answer_word'), then=Value(1)),
+                                                     default=Value(0), output_field=FloatField())))\
+                                .order_by('score')[:4]
+        return words
+
+
 def test(request, question_field, answer_field, total_no_questions, current_question):
     if request.method == 'GET':
         if current_question > total_no_questions:
             return redirect(request.build_absolute_uri('/vocabulary/final_result/{}'.format(total_no_questions)))
         else:
-            n = 4
-            words = []
-            styles = []
-            for n in np.random.randint(1, 800, n):
-                words.append(Word.objects.get(pk=n))
-                styles.append('btn-primary')
-
+            words = _get_questions(mode='revision')
+            styles = ['btn-primary'] * len(words)
             question_word = choice(words)
             question, created = Question.objects.update_or_create(
                 question=question_word,
