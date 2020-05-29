@@ -2,8 +2,8 @@ from django.db import models
 
 
 class Word(models.Model):
-    hanzi = models.CharField(max_length=10)
-    jyutping = models.CharField(max_length=20)
+    hanzi = models.CharField(max_length=20)
+    jyutping = models.CharField(max_length=50)
     english = models.CharField(max_length=50)
     audio = models.FileField(upload_to='.')
 
